@@ -1,50 +1,82 @@
-# Welcome to your Expo app 👋
+# Bookmarks App (Expo Router + Supabase)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A responsive mobile/web app built with React Native, Expo and Expo Router.
 
-## Get started
+Features:
+- Supabase email/password authentication (Login, Register)
+- Home screen with welcome and auth actions
+- Bookmarks CRUD with separate screens
+- View Bookmark screen
+- Add Bookmark screen
+- Edit Bookmark screen
+- Delete Bookmark confirmation screen
+- Responsive layouts for smartphones and desktop web
+- Local SQL migrations for database setup
 
-1. Install dependencies
+## Tech Stack
 
-   ```bash
-   npm install
-   ```
+- Expo + React Native + TypeScript
+- Expo Router (file-based navigation)
+- Supabase Auth + Postgres
 
-2. Start the app
+## Environment Variables
 
-   ```bash
-   npx expo start
-   ```
+Set these in `.env`:
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```env
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
+EXPO_PUBLIC_SUPABASE_KEY=your_supabase_publishable_or_anon_key
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Install & Run
 
-## Learn more
+```bash
+npm install
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Run on web:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start --web
+```
 
-## Join the community
+## Supabase Database Migration
 
-Join our community of developers creating universal apps.
+Migration files are local in:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `supabase/migrations`
+
+Current migration:
+
+- `supabase/migrations/202604220001_create_bookmarks.sql`
+
+What it creates/configures:
+- `public.bookmarks` table
+- index for user/time access patterns
+- `updated_at` trigger function
+- row-level security (RLS)
+- owner-only SELECT/INSERT/UPDATE/DELETE policies
+
+Apply the SQL file in your Supabase SQL editor or via Supabase CLI.
+
+## Route Structure
+
+- `/` Home
+- `/login` Login
+- `/register` Register
+- `/bookmarks` Bookmarks List
+- `/bookmarks/add` Add Bookmark
+- `/bookmarks/[id]` View Bookmark
+- `/bookmarks/[id]/edit` Edit Bookmark
+- `/bookmarks/[id]/delete` Delete Bookmark
+
+## Architecture Notes
+
+Separation of concerns and DRY are implemented by splitting the app into focused modules:
+
+- `features/auth` for auth actions and route-guard hook
+- `features/bookmarks` for bookmark types and data access service
+- `providers` for auth session state
+- `components/app` for shared form controls, layout shell, and reusable forms
+- `app` routes stay thin: navigation + screen-specific orchestration
